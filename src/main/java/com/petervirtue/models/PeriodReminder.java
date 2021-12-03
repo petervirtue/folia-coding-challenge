@@ -1,5 +1,20 @@
 package com.petervirtue.models;
 
+/*
+
+Period Reminder Model:
+- id (int, PK)
+- user_id (int, FK)
+- days_left (int)
+- message (varchar(128))
+- time (time)
+- period (int)
+- monthly (boolean, tinyint)
+- created_at (timestamp)
+- updated_at (timestamp)
+
+*/
+
 import java.sql.Time;
 import java.util.Calendar;
 import java.util.Date;
@@ -12,10 +27,7 @@ public class PeriodReminder extends ScheduleRule {
     private boolean monthly;
 
     public PeriodReminder(User user, String message, Time alertTime, int daysLeft, int period, boolean monthly) {
-        this.user = user;
-        this.message = message;
-        this.alertTime = alertTime;
-        this.daysLeft = daysLeft;
+        super(user, message, alertTime, daysLeft);
         this.period = period;
         this.monthly = monthly;
     }
@@ -55,5 +67,4 @@ public class PeriodReminder extends ScheduleRule {
 
         return line;
     }
-    
 }

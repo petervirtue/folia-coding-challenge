@@ -5,14 +5,18 @@ import java.util.Date;
 
 public abstract class ScheduleRule {
 
-    // Everything that every rule uses
-    protected int id;
+    // Everything that both rules use
     protected User user;
     protected String message;
     protected Time alertTime;
     protected int daysLeft;
 
-    public ScheduleRule() {}
+    public ScheduleRule(User user, String message, Time alertTime, int daysLeft) {
+        this.user = user;
+        this.message = message;
+        this.alertTime = alertTime;
+        this.daysLeft = daysLeft;
+    }
 
     public String getMessage() {
         return message;

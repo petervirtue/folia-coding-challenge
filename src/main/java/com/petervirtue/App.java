@@ -26,6 +26,7 @@ public class App {
         run(database);
     }
 
+    // The command line prompt
     public static void run(Database database) {
         // Initialize command line prompts
         System.out.println("\nEnter the number of the option you would like to execute:\n1. Add a new user\n2. Get all users\n3. Get reminders for a day\n4. Add a new schedule rule\n\nOr type close to finish");
@@ -157,7 +158,6 @@ public class App {
 
                 PeriodReminder reminder = new PeriodReminder(user, message, time, daysLeft, period, true);
                 addScheduleRule(reminder, database);
-
             } else if (ruleType.equalsIgnoreCase("4")) {
                 System.out.println("\nAfter how many days would you like to be reminded [number of days]?");
                 int period = DateTime.getDaysLeft(scanner.nextInt());
@@ -183,18 +183,23 @@ public class App {
         scanner.close();
     }
 
+    // Add in a user
     public static void addUser(String name, Database database) {
         User user = new User(name);
+
         database.save(user);
+
         System.out.println("New user with name \"" + name + "\" has been saved to the database!");
     }
 
     // Main function number one, adding a schedule rule
     public static void addScheduleRule(ScheduleRule scheduleRule, Database database) {
         database.save(scheduleRule);
+        
         System.out.println("New schedule rule with message \"" + scheduleRule.getMessage() + "\" has been saved to the database!");
     }
 
+    // Main function number two, getting the notifications to be sent out for a day.
     public static ArrayList<ScheduleRule> getReminderTimesForDate(Date date, Database database) {
         ArrayList<ScheduleRule> rules = database.getAllScheduleRules();
         

@@ -33,13 +33,12 @@ public class Database {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
     }
 
-    // Get all users for the DB class
+    // Get all users for the DB instance
     private void getUsers() {
         ArrayList<User> newUsers = new ArrayList<User>();
-        final String getUsers = "SELECT id, name FROM users";
+        String getUsers = "SELECT id, name FROM users";
 
         // Try to get the users
         try {
@@ -58,7 +57,7 @@ public class Database {
         users = newUsers;
     }
 
-    // Get all rules for the DB class
+    // Get all rules for the DB instance
     private void getRules() {
         ArrayList<ScheduleRule> newRules = new ArrayList<ScheduleRule>();
 
@@ -110,17 +109,17 @@ public class Database {
         rules = newRules;
     }
 
-    // Get all users
+    // Database Component Get All for Users
     public ArrayList<User> getAllUsers() {
         return users;
     }
 
-    // Get all reminder times (Schedule Rules)
+    // Database Component Get All for Schedule Rules
     public ArrayList<ScheduleRule> getAllScheduleRules() {
         return rules;
     }
 
-    // Save a user
+    // Database Component Save for Users
     public int save(User user) {
         // If no users are edited, 0 is returned for the ID. Otherwise, the affected ID is returned.
         String saveUser = "INSERT INTO users(name) "
@@ -129,7 +128,7 @@ public class Database {
 
         try {
             // Prepared stamement so that we can see if rows are changed or not.
-            // Realistically with this program there won't be much editing of users,
+            // Realistically with this program there won't be editing of users,
             // but in practice this is how I have done it before
             PreparedStatement statement = connection.prepareStatement(saveUser, Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, user.getName());
@@ -156,7 +155,7 @@ public class Database {
         return id;
     }
 
-    // Save a ScheduleRule
+    // Database Component Save for Schedule Rules
     public int save(ScheduleRule rule) {
         int id = 0;
         String saveRule = "";

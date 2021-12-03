@@ -42,7 +42,9 @@ public class DateTime {
     // Get weekday for reminder based off of days left & current weekday
     public static String getWeekdayFromDaysLeft(int daysLeft) {
         Calendar calendar = Calendar.getInstance();
+
         calendar.setTime(new Date());
+
         int weekday = calendar.get(Calendar.DAY_OF_WEEK);
         
         if (weekday + daysLeft > 7) {
@@ -60,12 +62,14 @@ public class DateTime {
         calendar.setTime(new Date());
         int weekday = calendar.get(Calendar.DAY_OF_WEEK);
         int daysLeft = (target - weekday < 0) ? (7 - (weekday - target)) : (daysLeft = target - weekday);
+
         return daysLeft;
     }
 
     // Get the time for the reminder
     public static String trimDate(Date date) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
+
         return simpleDateFormat.format(date);
     }
 
@@ -73,12 +77,13 @@ public class DateTime {
     public static Time getTimeFromString(String stringTime) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
         Time time = null;
+
         try {
             time = new Time(simpleDateFormat.parse(stringTime).getTime());
         } catch (ParseException e) {
             return null;
         }
-        
+
         return time;
     }
 
@@ -87,6 +92,7 @@ public class DateTime {
     {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/mm/yyyy");
         Date date = null;
+
         try {
             date = simpleDateFormat.parse(stringDate);
         } catch (ParseException e) {
@@ -95,5 +101,4 @@ public class DateTime {
 
         return date;
     }
-    
 }

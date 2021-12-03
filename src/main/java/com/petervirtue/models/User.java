@@ -1,5 +1,15 @@
 package com.petervirtue.models;
 
+/*
+
+User Model:
+- id (int)
+- name (varchar(128))
+- created_at (timestamp)
+- updated_at (timestamp)
+
+*/
+
 public class User {
 
     private String name;
