@@ -220,6 +220,9 @@ public class Database {
             }
         }
 
+        // Refresh rules
+        getRules();
+
         return id;
     }
 

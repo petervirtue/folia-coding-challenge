@@ -28,7 +28,7 @@ public class App {
 
     public static void run(Database database) {
         // Initialize command line prompts
-        System.out.println("\nEnter the number of the option you would like to execute:\n1. Add a new user\n2. Get all users\n3. Get reminders for the day\n4. Add a new schedule rule\n\nOr type close to finish");
+        System.out.println("\nEnter the number of the option you would like to execute:\n1. Add a new user\n2. Get all users\n3. Get reminders for a day\n4. Add a new schedule rule\n\nOr type close to finish");
         Scanner scanner = new Scanner(System.in);
         String option = scanner.nextLine();
 
