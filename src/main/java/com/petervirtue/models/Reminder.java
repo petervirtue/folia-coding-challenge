@@ -3,15 +3,15 @@ package com.petervirtue.models;
 import java.sql.Time;
 import java.util.Date;
 
-public abstract class ScheduleRule {
+public abstract class Reminder {
 
-    // Everything that both rules use
+    // Everything that both reminders use
     protected User user;
     protected String message;
     protected Time alertTime;
     protected int daysLeft;
 
-    public ScheduleRule(User user, String message, Time alertTime, int daysLeft) {
+    public Reminder(User user, String message, Time alertTime, int daysLeft) {
         this.user = user;
         this.message = message;
         this.alertTime = alertTime;

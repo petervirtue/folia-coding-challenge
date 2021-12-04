@@ -21,7 +21,7 @@ import java.util.Date;
 
 import com.petervirtue.utils.DateTime;
 
-public class PeriodReminder extends ScheduleRule {
+public class PeriodReminder extends Reminder {
 
     private int period;
     private boolean monthly;

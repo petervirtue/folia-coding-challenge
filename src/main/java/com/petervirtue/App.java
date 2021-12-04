@@ -7,7 +7,7 @@ import java.util.Scanner;
 import com.petervirtue.database.Database;
 import com.petervirtue.models.DailyReminder;
 import com.petervirtue.models.PeriodReminder;
-import com.petervirtue.models.ScheduleRule;
+import com.petervirtue.models.Reminder;
 import com.petervirtue.models.User;
 import com.petervirtue.utils.DateTime;
 
@@ -15,13 +15,13 @@ public class App {
 
     // Default Database Information
     static final String url = "jdbc:mysql://localhost:3306/folia";
-    static final String user = "root";
+    static final String sqluser = "root";
     static final String password = "";
 
     public static void main(String[] args) throws Exception {
         // Run the command line interface
         // Create the Database object 
-        Database database = new Database(url, user, password);
+        Database database = new Database(url, sqluser, password);
         System.out.println("Folia Health Coding Challenge by Peter Virtue");
         run(database);
     }
@@ -29,7 +29,7 @@ public class App {
     // The command line prompt
     public static void run(Database database) {
         // Initialize command line prompts
-        System.out.println("\nEnter the number of the option you would like to execute:\n1. Add a new user\n2. Get all users\n3. Get reminders for a day\n4. Add a new schedule rule\n\nOr type close to finish");
+        System.out.println("\nEnter the number of the option you would like to execute:\n1. Add a new user\n2. Get all users\n3. Get reminders for a day\n4. Add a new schedule reminder\n\nOr type close to finish");
         Scanner scanner = new Scanner(System.in);
         String option = scanner.nextLine();
 
@@ -58,7 +58,7 @@ public class App {
             System.out.println("\nPlease enter the date you would like to check (mm/dd/yyyy OR today):");
             String dateString = scanner.nextLine();
             Date date = null;
-            ArrayList<ScheduleRule> times = new ArrayList<ScheduleRule>();
+            ArrayList<Reminder> times = new ArrayList<Reminder>();
 
             if (dateString.equalsIgnoreCase("today")) {
                 date = new Date();
@@ -68,7 +68,7 @@ public class App {
                     System.out.println("\nThere are no reminders for today.");
                 } else {
                     System.out.println("\nAll reminders for today:");
-                    for (ScheduleRule time : times) {
+                    for (Reminder time : times) {
                         System.out.println(time.getLocalizedReminder());
                     }
                 }
@@ -80,7 +80,7 @@ public class App {
                     System.out.println("\nThere are no reminders for " + dateString + ".");
                 } else {
                     System.out.println("\nAll reminders for " + dateString + ":");
-                    for (ScheduleRule time : times) {
+                    for (Reminder time : times) {
                         System.out.println(time.getLocalizedReminder());
                     }
                 }
@@ -99,9 +99,9 @@ public class App {
             String message = scanner.nextLine();
 
             System.out.println("\nEnter the number of the option you would like to create:\n1. Daily\n2. Weekly\n3. Monthly\n4. Every N Days");
-            String ruleType = scanner.nextLine();
+            String reminderType = scanner.nextLine();
 
-            if (ruleType.equalsIgnoreCase("1")) {
+            if (reminderType.equalsIgnoreCase("1")) {
                 System.out.println("\nRemind every day indefinitely or for a certain amount of days [-1 for indefinite, number of days for limited]?");
                 int daysLeft = scanner.nextInt();
 
@@ -129,10 +129,10 @@ public class App {
                 for (Time t : times) {
 
                     DailyReminder reminder = new DailyReminder(user, message, t, daysLeft);
-                    addScheduleRule(reminder, database);
+                    addReminder(reminder, database);
                 }
 
-            } else if (ruleType.equalsIgnoreCase("2")) {
+            } else if (reminderType.equalsIgnoreCase("2")) {
                 int period = 6;
 
                 System.out.println("\nWhat day of the week would you like for this reminder [Sunday 1, Monday 2, Tuesday 3, Wednesday 4, Thursday 5, Friday 6, Saturday 7]?");
@@ -144,8 +144,8 @@ public class App {
                 Time time = DateTime.getTimeFromString(stringTime);
 
                 PeriodReminder reminder = new PeriodReminder(user, message, time, daysLeft, period, false);
-                addScheduleRule(reminder, database);
-            } else if (ruleType.equalsIgnoreCase("3")) {
+                addReminder(reminder, database);
+            } else if (reminderType.equalsIgnoreCase("3")) {
                 int daysLeft = 0;
                 
                 System.out.println("\nWhat day of the month would you like for this reminder [0 - 31, 29 - 31 will not remind for shorter months]?");
@@ -157,8 +157,8 @@ public class App {
                 Time time = DateTime.getTimeFromString(stringTime);
 
                 PeriodReminder reminder = new PeriodReminder(user, message, time, daysLeft, period, true);
-                addScheduleRule(reminder, database);
-            } else if (ruleType.equalsIgnoreCase("4")) {
+                addReminder(reminder, database);
+            } else if (reminderType.equalsIgnoreCase("4")) {
                 System.out.println("\nAfter how many days would you like to be reminded [number of days]?");
                 int period = DateTime.getDaysLeft(scanner.nextInt());
                 int daysLeft = period - 1;
@@ -169,7 +169,7 @@ public class App {
                 Time time = DateTime.getTimeFromString(stringTime);
 
                 PeriodReminder reminder = new PeriodReminder(user, message, time, daysLeft, period, false);
-                addScheduleRule(reminder, database);
+                addReminder(reminder, database);
             } else {
                 System.out.println("Sorry, that isn't an option. Please try again.\n");
             }
@@ -192,23 +192,23 @@ public class App {
         System.out.println("New user with name \"" + name + "\" has been saved to the database!");
     }
 
-    // Main function number one, adding a schedule rule
-    public static void addScheduleRule(ScheduleRule scheduleRule, Database database) {
-        database.save(scheduleRule);
-        
-        System.out.println("New schedule rule with message \"" + scheduleRule.getMessage() + "\" has been saved to the database!");
+    // Main function number one, adding a schedule reminder
+    public static void addReminder(Reminder reminder, Database database) {
+        database.save(reminder);
+
+        System.out.println("New schedule reminder with message \"" + reminder.getMessage() + "\" has been saved to the database!");
     }
 
     // Main function number two, getting the notifications to be sent out for a day.
-    public static ArrayList<ScheduleRule> getReminderTimesForDate(Date date, Database database) {
-        ArrayList<ScheduleRule> rules = database.getAllScheduleRules();
+    public static ArrayList<Reminder> getReminderTimesForDate(Date date, Database database) {
+        ArrayList<Reminder> reminders = database.getAllReminders();
         
-        for (int i = 0; i < rules.size(); i++) {
-            if (!rules.get(i).shouldAlertOnDay(date)) {
-                rules.remove(i);
+        for (int i = 0; i < reminders.size(); i++) {
+            if (!reminders.get(i).shouldAlertOnDay(date)) {
+                reminders.remove(i);
             }
         }
 
-        return rules;
+        return reminders;
     }
 }

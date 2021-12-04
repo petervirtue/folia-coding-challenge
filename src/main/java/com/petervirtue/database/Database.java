@@ -11,15 +11,15 @@ import java.util.ArrayList;
 
 import com.petervirtue.models.DailyReminder;
 import com.petervirtue.models.PeriodReminder;
-import com.petervirtue.models.ScheduleRule;
+import com.petervirtue.models.Reminder;
 import com.petervirtue.models.User;
 
 public class Database {
 
-    // Database connection, users and rules
+    // Database connection, users and reminders
     private Connection connection = null;
     private ArrayList<User> users = null;
-    private ArrayList<ScheduleRule> rules = null;
+    private ArrayList<Reminder> reminders = null;
 
     // Initialize
     public Database(String url, String user, String password) {
@@ -27,9 +27,9 @@ public class Database {
         try {
             connection = DriverManager.getConnection(url, user, password);
 
-            // Populate Users and Rules from DB
+            // Populate Users and Reminders from DB
             getUsers();
-            getRules();
+            getReminders();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -57,11 +57,11 @@ public class Database {
         users = newUsers;
     }
 
-    // Get all rules for the DB instance
-    private void getRules() {
-        ArrayList<ScheduleRule> newRules = new ArrayList<ScheduleRule>();
+    // Get all reminders for the DB instance
+    private void getReminders() {
+        ArrayList<Reminder> newReminders = new ArrayList<Reminder>();
 
-        // Try to get the rules
+        // Try to get the reminders
         try {
             Statement statement = connection.createStatement();
 
@@ -79,7 +79,7 @@ public class Database {
                         resultSet.getTime("time"),
                         resultSet.getInt("days_left")
                     );
-                    newRules.add(reminder);
+                    newReminders.add(reminder);
                 }
             }
 
@@ -99,14 +99,14 @@ public class Database {
                         resultSet.getInt("period"),
                         resultSet.getBoolean("monthly")
                     );
-                    newRules.add(reminder);
+                    newReminders.add(reminder);
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        rules = newRules;
+        reminders = newReminders;
     }
 
     // Database Component Get All for Users
@@ -114,9 +114,9 @@ public class Database {
         return users;
     }
 
-    // Database Component Get All for Schedule Rules
-    public ArrayList<ScheduleRule> getAllScheduleRules() {
-        return rules;
+    // Database Component Get All for Reminders
+    public ArrayList<Reminder> getAllReminders() {
+        return reminders;
     }
 
     // Database Component Save for Users
@@ -155,23 +155,23 @@ public class Database {
         return id;
     }
 
-    // Database Component Save for Schedule Rules
-    public int save(ScheduleRule rule) {
+    // Database Component Save for Schedule reminders
+    public int save(Reminder reminder) {
         int id = 0;
-        String saveRule = "";
-        User user = rule.getUser();
+        String saveReminder = "";
+        User user = reminder.getUser();
 
-        if (rule instanceof DailyReminder) {
-            DailyReminder dailyRule = (DailyReminder) rule;
-            saveRule = "INSERT INTO daily_reminders(user_id, message, time, days_left) "
+        if (reminder instanceof DailyReminder) {
+            DailyReminder dailyReminder = (DailyReminder) reminder;
+            saveReminder = "INSERT INTO daily_reminders(user_id, message, time, days_left) "
                 + "VALUES(?, ?, ?, ?)";
             
             try {
-                PreparedStatement statement = connection.prepareStatement(saveRule, Statement.RETURN_GENERATED_KEYS);
+                PreparedStatement statement = connection.prepareStatement(saveReminder, Statement.RETURN_GENERATED_KEYS);
                 statement.setInt(1, user.getID());
-                statement.setString(2, dailyRule.getMessage());
-                statement.setTimestamp(3, new Timestamp(dailyRule.getAlertTime().getTime()));
-                statement.setInt(4, dailyRule.getDaysLeft());
+                statement.setString(2, dailyReminder.getMessage());
+                statement.setTimestamp(3, new Timestamp(dailyReminder.getAlertTime().getTime()));
+                statement.setInt(4, dailyReminder.getDaysLeft());
                 int rowsChanged = statement.executeUpdate();
 
                 if (rowsChanged > 0) {
@@ -188,19 +188,19 @@ public class Database {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-        } else if (rule instanceof PeriodReminder) {
-            PeriodReminder periodRule = (PeriodReminder) rule;
-            saveRule = "INSERT INTO period_reminders(user_id, days_left, message, time, period, monthly) "
+        } else if (reminder instanceof PeriodReminder) {
+            PeriodReminder periodReminder = (PeriodReminder) reminder;
+            saveReminder = "INSERT INTO period_reminders(user_id, days_left, message, time, period, monthly) "
                 + "VALUES(?, ?, ?, ?, ?, ?)";
 
             try {
-                PreparedStatement statement = connection.prepareStatement(saveRule, Statement.RETURN_GENERATED_KEYS);
+                PreparedStatement statement = connection.prepareStatement(saveReminder, Statement.RETURN_GENERATED_KEYS);
                 statement.setInt(1, user.getID());
-                statement.setInt(2, periodRule.getDaysLeft());
-                statement.setString(3, periodRule.getMessage());
-                statement.setTimestamp(4, new Timestamp(periodRule.getAlertTime().getTime()));
-                statement.setInt(5, periodRule.getPeriod());
-                statement.setBoolean(6, periodRule.getMonthly());
+                statement.setInt(2, periodReminder.getDaysLeft());
+                statement.setString(3, periodReminder.getMessage());
+                statement.setTimestamp(4, new Timestamp(periodReminder.getAlertTime().getTime()));
+                statement.setInt(5, periodReminder.getPeriod());
+                statement.setBoolean(6, periodReminder.getMonthly());
                 int rowsChanged = statement.executeUpdate();
 
                 if (rowsChanged > 0) {
@@ -219,23 +219,23 @@ public class Database {
             }
         }
 
-        // Refresh rules
-        getRules();
+        // Refresh reminders
+        getReminders();
 
         return id;
     }
 
-    // Get a user's schedule rules
-    public ArrayList<ScheduleRule> getUserScheduleRules(User user) {
-        ArrayList<ScheduleRule> userRules = new ArrayList<ScheduleRule>();
+    // Get a user's schedule reminders
+    public ArrayList<Reminder> getUserReminders(User user) {
+        ArrayList<Reminder> userReminders = new ArrayList<Reminder>();
 
-        for (ScheduleRule rule : rules) {
-            if (rule.getUser().getID() == user.getID()) {
-                userRules.add(rule);
+        for (Reminder reminder : reminders) {
+            if (reminder.getUser().getID() == user.getID()) {
+                userReminders.add(reminder);
             }
         }
 
-        return userRules;
+        return userReminders;
     }
 
     // Get a user based on ID

@@ -18,7 +18,7 @@ import java.util.Date;
 
 import com.petervirtue.utils.DateTime;
 
-public class DailyReminder extends ScheduleRule {
+public class DailyReminder extends Reminder {
 
     public DailyReminder(User user, String message, Time alertTime, int daysLeft) {
         super(user, message, alertTime, daysLeft);
