@@ -2,6 +2,8 @@
 ## Intro
 I have decided to implement the database component as well as the user interface component for this challenge in Java using the command line for user input. I created a MySQL database with three tables to manage Users, Daily Reminders and Reminders given out on different intervals (weekly, monthly, or every n days). Both of these reminders on the Java side are subclasses of the Reminder class which allows for checking notification dates generically. I am going to provide the documentation I have as well as a get started for this project, and if you have any questions feel free to reach out. Thank you again for this opportunity and I am looking forward to Monday!
 
+![Screen Shot 2021-12-03 at 8 05 21 PM](https://user-images.githubusercontent.com/14151831/144690744-910441ce-97b0-4ea5-ba14-f1a93c13a7b9.png)
+
 ## Get started
 ### MySQL
 In the `database` folder, I have included a schema dump of the database that I used for this challenge. To get this going, start mysql (I did it on my local machine just on localhost:3306) and import the database. It should be named folia with the three tables mentioned above. If any of this information is different on your machine, simply edit the `url`, `sqluser` and `password` fields to match what you have setup on your local machine. 
