@@ -43,8 +43,8 @@ CREATE TABLE `period_reminders` (
   `time` time NOT NULL,
   `period` int NOT NULL,
   `monthly` tinyint NOT NULL,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `period_reminder_user_idx` (`user_id`),
   CONSTRAINT `period_reminder_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
